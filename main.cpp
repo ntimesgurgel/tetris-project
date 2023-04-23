@@ -80,7 +80,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(320, 480), "The Game!");
 
     sf::Texture t1,t2,t3;
-    t1.loadFromFile("assets/tiles1.png");
+    t1.loadFromFile("assets/tiles2.png");
     t2.loadFromFile("assets/background1.png");
     // t3.loadFromFile("assets/frame.png");
 
@@ -165,7 +165,7 @@ int main()
     }
 
     dx=0; rotate=0; 
-    delay = 0.3 - (Score / 100.0); // Difficulty based on current score
+    delay = 0.3 - (Score * 0.01); // Difficulty based on current score
     if (delay < 0.1) {
       delay = 0.1; // Set a minimum delay of 0.1 seconds
     }
