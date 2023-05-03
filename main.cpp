@@ -1,6 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <time.h>
 #include <iomanip>
+#include <fstream> // leitura de arquivo
+
+// using namespace std;
 
 const int HEIGHT = 20;
 const int WIDTH = 10;
@@ -32,21 +35,20 @@ bool check()
 };
 
 
-void displayHighScore(sf::RenderWindow& window)
+void displayHighScore(sf::RenderWindow& window, int highscore)
 {
     // Load font
-    int score = 0;
     sf::Font font;
     font.loadFromFile("assets/Tetris.ttf");
 
     // Create text object
-    sf::Text text(std::to_string(score), font, 20);
+    sf::Text text(std::to_string(highscore), font, 20);
     text.setFillColor(sf::Color::Black);
     text.setPosition(256, 50);
 
-    // Format score with leading zeros
+    // Format highscore with leading zeros
     std::ostringstream ss;
-    ss << std::setw(3) << std::setfill('0') << score;
+    ss << std::setw(3) << std::setfill('0') << highscore;
     text.setString(ss.str());
 
     // Draw text to window
@@ -193,7 +195,28 @@ int main()
       }
 
     // window.draw(frame);
-    displayHighScore(window);
+
+
+    // Highscore
+    int highscore;
+    std::ifstream arquivo("arquivo.txt");
+    if (arquivo.is_open()) {
+        // Se o arquivo existe, mostra o seu conteúdo como inteiro
+        arquivo >> highscore;
+        arquivo.close();
+    } else {
+        // Se o arquivo não existe, cria um novo arquivo com o valor 0
+        std::ofstream novo_arquivo("arquivo.txt");
+        novo_arquivo << "0";
+        novo_arquivo.close();
+    }
+    displayHighScore(window, highscore);
+
+    
+  // O programa tenta abrir o arquivo "arquivo.txt" utilizando a classe ifstream. 
+  // Se o arquivo existir, o seu conteúdo é lido e armazenado na variável conteudo.
+  // Se o arquivo não existir, o programa cria um novo arquivo utilizando a classe ofstream e escreve o valor 0 nele.
+
     displayScore(window, Score);
     window.display();
     }
