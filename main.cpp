@@ -3,65 +3,17 @@
 #include <iomanip>
 #include <fstream> // leitura de arquivo
 #include <iostream>
+#include "model.cpp"
 #include "controller.cpp"
 
-#define HEIGHT 20
-#define WIDTH 10
-
-int Score = 0;
-
-int field[HEIGHT][WIDTH] = {0};
-
-struct Point
-{int x,y;} current[4], next[4];
-
-int figures[7][4] =
-{
-    1,3,5,7,
-    0,2,3,5,
-    1,3,2,4,
-    1,3,2,5,
-    0,1,3,5,
-    1,3,5,4,
-    0,1,2,3,
-};
-
-bool check()
-{
-   for (int i=0;i<4;i++){
-      if (current[i].x<0 || current[i].x>=WIDTH|| current[i].y>=HEIGHT){
-        return 0;
-      } else if (field[current[i].y][current[i].x]){
-        return 0;
-      }
-    }
-
-   return 1;
-};
-
-bool checkGameOver() {
-  return !check() && current[0].y == 0;
-}
-
-int createTetromino() {
-  int n=rand()%7;
-  int pieceID= n + 1;
-  for (int i=0;i<4;i++)
-    {
-      // Gerando nova peça
-      current[i].x = figures[n][i] % 2 + (WIDTH / 2) - 1; // Must to be changed
-      current[i].y = figures[n][i] / 2;
-    }
-    return pieceID;
-}
 
 int main()
 {
     srand(time(0));     
 
     sf::RenderWindow window(sf::VideoMode(320, 480), "The Game!");
-
-    sf::Texture t1,t2,t3;
+  
+    sf::Texture t1,t2;
     t1.loadFromFile("assets/tiles2.png");
     t2.loadFromFile("assets/background1.png");
 
@@ -74,6 +26,7 @@ int main()
 
     int pieceID = createTetromino();
 
+    int highscore = getHighScore();
     while (window.isOpen())
     {
         float time = clock.getElapsedTime().asSeconds();
@@ -94,7 +47,7 @@ int main()
         }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) delay=0.05;
-    if (!checkGameOver()){
+    if (!isGameOver()){
       //// <- Move -> ///
       for(int i=0;i<4;i++){
         next[i]=current[i];
@@ -140,8 +93,7 @@ int main()
     for (int i=HEIGHT-1;i>0;i--)
     {
         int count=0;
-        for (int j=0;j<WIDTH;j++)
-        {
+        for (int j=0;j<WIDTH;j++){
             if (field[i][j]) count++;
             field[k][j]=field[i][j];
         }
@@ -177,29 +129,12 @@ int main()
         window.draw(s);
       }
 
-    //
-    
-    // Highscore
-    int highscore;
-    std::ifstream arquivo("arquivo.txt");
-    if (arquivo.is_open()) {
-        // Se o arquivo existe, mostra o seu conteúdo como inteiro
-        arquivo >> highscore;
-        arquivo.close();
-    } else {
-        // Se o arquivo não existe, cria um novo arquivo com o valor 0
-        std::ofstream novo_arquivo("arquivo.txt");
-        novo_arquivo << "0";
-        novo_arquivo.close();
+
+    if (isGameOver()) {
+      saveNewHighScore(Score);
+      displayGameOver(window);
     }
 
-    if (checkGameOver()) {
-      displayGameOver(window);
-      if (Score > highscore){
-        std::ofstream novo_arquivo("arquivo.txt");
-        novo_arquivo << Score;
-        novo_arquivo.close();}
-    }
     displayHighScore(window, highscore);
 
     
