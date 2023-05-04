@@ -1,7 +1,8 @@
 #define HEIGHT 20
 #define WIDTH 10
+#define SIZE 18
 
-int Score = 0;
+int score = 0;
 
 int field[HEIGHT][WIDTH] = {0};
 

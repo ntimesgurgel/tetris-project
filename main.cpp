@@ -12,21 +12,18 @@ int main()
     srand(time(0));     
 
     sf::RenderWindow window(sf::VideoMode(320, 480), "The Game!");
-  
     sf::Texture t1,t2;
     t1.loadFromFile("assets/tiles2.png");
     t2.loadFromFile("assets/background1.png");
-
     sf::Sprite s(t1), background(t2);
+
+    int pieceID = createTetromino();
+    int highscore = getHighScore();
 
     int dx=0; bool rotate=0;
     float timer=0,delay=0.3; 
-
     sf::Clock clock;
 
-    int pieceID = createTetromino();
-
-    int highscore = getHighScore();
     while (window.isOpen())
     {
         float time = clock.getElapsedTime().asSeconds();
@@ -62,7 +59,7 @@ int main()
       //////Rotate//////
       if (rotate)
         {
-          Point p = current[1]; //center of rotation
+          Point p = current[1]; // Center of rotation
           for (int i=0;i<4;i++)
             {
               int x = current[i].y-p.y;
@@ -81,7 +78,7 @@ int main()
           for (int i=0;i<4;i++){
             field[next[i].y][next[i].x]=pieceID;
           }
-          pieceID = createTetromino();
+          pieceID = createTetromino(); // Gera uma nova peça
           }
 
           timer=0;
@@ -98,11 +95,11 @@ int main()
             field[k][j]=field[i][j];
         }
         if (count<WIDTH) k--;
-        else {Score++;}
+        else {score++;}
     }
 
     dx=0; rotate=0; 
-    delay = 0.3 - (Score * 0.01); // Difficulty based on current score
+    delay = 0.3 - (score * 0.01); // Difficulty based on current score
     if (delay < 0.1) {
       delay = 0.1; // Set a minimum delay of 0.1 seconds
     }
@@ -115,34 +112,29 @@ int main()
      for (int j=0;j<WIDTH;j++)
        {
          if (field[i][j]==0) continue;
-         s.setTextureRect(sf::IntRect(field[i][j]*18,0,18,18));
-         s.setPosition(j*18,i*18);
+         s.setTextureRect(sf::IntRect(field[i][j]*SIZE,0,SIZE,SIZE));
+         s.setPosition(j*SIZE,i*SIZE);
          s.move(28,31); //offset
          window.draw(s);
        }
 
     for (int i=0;i<4;i++)
       {
-        s.setTextureRect(sf::IntRect(pieceID*18,0,18,18));
-        s.setPosition(current[i].x*18,current[i].y*18);
+        s.setTextureRect(sf::IntRect(pieceID*SIZE,0,SIZE,SIZE));
+        s.setPosition(current[i].x*SIZE,current[i].y*SIZE);
         s.move(28,31); //offset
         window.draw(s);
       }
 
 
     if (isGameOver()) {
-      saveNewHighScore(Score);
+      saveNewHighScore(score);
       displayGameOver(window);
+      highscore = getHighScore();
     }
 
     displayHighScore(window, highscore);
-
-    
-  // O programa tenta abrir o arquivo "arquivo.txt" utilizando a classe ifstream. 
-  // Se o arquivo existir, o seu conteúdo é lido e armazenado na variável conteudo.
-  // Se o arquivo não existir, o programa cria um novo arquivo utilizando a classe ofstream e escreve o valor 0 nele.
-
-    displayScore(window, Score);
+    displayScore(window, score);
     window.display();
     }
 

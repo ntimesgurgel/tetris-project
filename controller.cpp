@@ -56,7 +56,7 @@ int getHighScore() {
 void saveNewHighScore(int value) {
     if (value > getHighScore()){
         std::ofstream arquivo("arquivo.txt");
-        arquivo << Score;
+        arquivo << value;
         arquivo.close();}
 }
 
@@ -82,7 +82,7 @@ int createTetromino() {
   for (int i=0;i<4;i++)
     {
       // Gerando nova peça
-      current[i].x = figures[n][i] % 2 + (WIDTH / 2) - 1; // Must to be changed
+      current[i].x = figures[n][i] % 2 + (WIDTH / 2) - 1;
       current[i].y = figures[n][i] / 2;
     }
     return pieceID;
