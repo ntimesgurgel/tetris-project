@@ -48,7 +48,7 @@ void displayHighScore(sf::RenderWindow& window, int highscore)
 
     // Create text object
     sf::Text text(std::to_string(highscore), font, 16);
-    text.setFillColor(sf::Color::White);
+    text.setFillColor(sf::Color(139, 87, 96, 255));
     text.setPosition(261, 74);
 
     // Format highscore with leading zeros
@@ -68,7 +68,7 @@ void displayScore(sf::RenderWindow& window, int score)
 
     // Create text object
     sf::Text text(std::to_string(score), font, 16);
-    text.setFillColor(sf::Color::White);
+    text.setFillColor(sf::Color(139, 87, 96, 255));
     text.setPosition(260, 114);
 
     // Format score with leading zeros
@@ -88,10 +88,14 @@ void displayGameOver(sf::RenderWindow& window)
 
     // Create text object
     sf::Text text("GAME OVER", font, 30);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition(60, 200);
+    text.setFillColor(sf::Color(139, 87, 96, 255));
+    text.setPosition(20, 425);
     // Draw text to window
+    sf::RectangleShape rectangle(sf::Vector2f(320, 480));
+    rectangle.setFillColor(sf::Color(0, 0, 0, 180));
+    window.draw(rectangle);
     window.draw(text);
+
 }
 
 
