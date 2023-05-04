@@ -47,9 +47,9 @@ void displayHighScore(sf::RenderWindow& window, int highscore)
     font.loadFromFile("assets/Tetris.ttf");
 
     // Create text object
-    sf::Text text(std::to_string(highscore), font, 20);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition(256, 50);
+    sf::Text text(std::to_string(highscore), font, 16);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(261, 74);
 
     // Format highscore with leading zeros
     std::ostringstream ss;
@@ -67,9 +67,9 @@ void displayScore(sf::RenderWindow& window, int score)
     font.loadFromFile("assets/Tetris.ttf");
 
     // Create text object
-    sf::Text text(std::to_string(score), font, 20);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition(256, 115);
+    sf::Text text(std::to_string(score), font, 16);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(260, 114);
 
     // Format score with leading zeros
     std::ostringstream ss;
