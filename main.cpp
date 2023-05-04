@@ -5,10 +5,9 @@
 #include <iostream>
 #include "controller.cpp"
 
-// using namespace std;
+#define HEIGHT 20
+#define WIDTH 10
 
-const int HEIGHT = 20;
-const int WIDTH = 10;
 int Score = 0;
 
 int field[HEIGHT][WIDTH] = {0};
@@ -44,6 +43,18 @@ bool checkGameOver() {
   return !check() && current[0].y == 0;
 }
 
+int createTetromino() {
+  int n=rand()%7;
+  int pieceID= n + 1;
+  for (int i=0;i<4;i++)
+    {
+      // Gerando nova peça
+      current[i].x = figures[n][i] % 2 + (WIDTH / 2) - 1; // Must to be changed
+      current[i].y = figures[n][i] / 2;
+    }
+    return pieceID;
+}
+
 int main()
 {
     srand(time(0));     
@@ -53,14 +64,15 @@ int main()
     sf::Texture t1,t2,t3;
     t1.loadFromFile("assets/tiles2.png");
     t2.loadFromFile("assets/background1.png");
-    // t3.loadFromFile("assets/frame.png");
 
     sf::Sprite s(t1), background(t2);
 
-    int dx=0; bool rotate=0; int colorNum=1;
+    int dx=0; bool rotate=0;
     float timer=0,delay=0.3; 
 
     sf::Clock clock;
+
+    int pieceID = createTetromino();
 
     while (window.isOpen())
     {
@@ -69,6 +81,7 @@ int main()
         timer+=time;
 
         sf::Event e;
+        
         while (window.pollEvent(e))
         {
             if (e.type == sf::Event::Closed)
@@ -112,16 +125,10 @@ int main()
           for (int i=0;i<4;i++) { next[i]=current[i]; current[i].y+=1; }
           if (!check())
           {
-          for (int i=0;i<4;i++) field[next[i].y][next[i].x]=colorNum;
-
-          colorNum=1+rand()%7;
-          int n=rand()%7;
-          for (int i=0;i<4;i++)
-            {
-              // Gerando nova peça
-              current[i].x = figures[n][i] % 2 + (WIDTH / 2) - 1; // Must to be changed
-              current[i].y = figures[n][i] / 2;
-            }
+          for (int i=0;i<4;i++){
+            field[next[i].y][next[i].x]=pieceID;
+          }
+          pieceID = createTetromino();
           }
 
           timer=0;
@@ -164,7 +171,7 @@ int main()
 
     for (int i=0;i<4;i++)
       {
-        s.setTextureRect(sf::IntRect(colorNum*18,0,18,18));
+        s.setTextureRect(sf::IntRect(pieceID*18,0,18,18));
         s.setPosition(current[i].x*18,current[i].y*18);
         s.move(28,31); //offset
         window.draw(s);
