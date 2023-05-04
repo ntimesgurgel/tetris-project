@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <fstream> // leitura de arquivo
 #include <iostream>
+#include "controller.cpp"
 
 // using namespace std;
 
@@ -38,66 +39,6 @@ bool check()
 
    return 1;
 };
-
-
-void displayHighScore(sf::RenderWindow& window, int highscore)
-{
-    // Load font
-    sf::Font font;
-    font.loadFromFile("assets/Tetris.ttf");
-
-    // Create text object
-    sf::Text text(std::to_string(highscore), font, 16);
-    text.setFillColor(sf::Color(139, 87, 96, 255));
-    text.setPosition(261, 74);
-
-    // Format highscore with leading zeros
-    std::ostringstream ss;
-    ss << std::setw(3) << std::setfill('0') << highscore;
-    text.setString(ss.str());
-
-    // Draw text to window
-    window.draw(text);
-}
-
-void displayScore(sf::RenderWindow& window, int score)
-{
-    // Load font
-    sf::Font font;
-    font.loadFromFile("assets/Tetris.ttf");
-
-    // Create text object
-    sf::Text text(std::to_string(score), font, 16);
-    text.setFillColor(sf::Color(139, 87, 96, 255));
-    text.setPosition(260, 114);
-
-    // Format score with leading zeros
-    std::ostringstream ss;
-    ss << std::setw(3) << std::setfill('0') << score;
-    text.setString(ss.str());
-
-    // Draw text to window
-    window.draw(text);
-}
-
-void displayGameOver(sf::RenderWindow& window)
-{
-    // Load font
-    sf::Font font;
-    font.loadFromFile("assets/Tetris.ttf");
-
-    // Create text object
-    sf::Text text("GAME OVER", font, 30);
-    text.setFillColor(sf::Color(139, 87, 96, 255));
-    text.setPosition(20, 425);
-    // Draw text to window
-    sf::RectangleShape rectangle(sf::Vector2f(320, 480));
-    rectangle.setFillColor(sf::Color(0, 0, 0, 180));
-    window.draw(rectangle);
-    window.draw(text);
-
-}
-
 
 bool checkGameOver() {
   return !check() && current[0].y == 0;
