@@ -2,6 +2,7 @@
 #include <time.h>
 #include <iomanip>
 #include <fstream> // leitura de arquivo
+#include <iostream>
 
 // using namespace std;
 
@@ -17,19 +18,23 @@ struct Point
 int figures[7][4] =
 {
     1,3,5,7,
-    2,4,5,7,
-    3,5,4,6,
-    3,5,4,7,
-    2,3,5,7,
-    3,5,7,6,
-    2,3,4,5,
+    0,2,3,5,
+    1,3,2,4,
+    1,3,2,5,
+    0,1,3,5,
+    1,3,5,4,
+    0,1,2,3,
 };
 
 bool check()
 {
-   for (int i=0;i<4;i++)
-      if (current[i].x<0 || current[i].x>=WIDTH || current[i].y>=HEIGHT) return 0;
-      else if (field[current[i].y][current[i].x]) return 0;
+   for (int i=0;i<4;i++){
+      if (current[i].x<0 || current[i].x>=WIDTH|| current[i].y>=HEIGHT){
+        return 0;
+      } else if (field[current[i].y][current[i].x]){
+        return 0;
+      }
+    }
 
    return 1;
 };
@@ -75,6 +80,25 @@ void displayScore(sf::RenderWindow& window, int score)
     window.draw(text);
 }
 
+void displayGameOver(sf::RenderWindow& window)
+{
+    // Load font
+    sf::Font font;
+    font.loadFromFile("assets/Tetris.ttf");
+
+    // Create text object
+    sf::Text text("GAME OVER", font, 30);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition(60, 200);
+    // Draw text to window
+    window.draw(text);
+}
+
+
+bool checkGameOver() {
+  return !check() && current[0].y == 0;
+}
+
 int main()
 {
     srand(time(0));     
@@ -112,45 +136,52 @@ int main()
         }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) delay=0.05;
-
-    //// <- Move -> ///
-    for (int i=0;i<4;i++) { next[i]=current[i]; current[i].x+=dx; }
-    if (!check()) for (int i=0;i<4;i++) current[i]=next[i];
-
-    //////Rotate//////
-    if (rotate)
-      {
-        Point p = current[1]; //center of rotation
-        for (int i=0;i<4;i++)
-          {
-            int x = current[i].y-p.y;
-            int y = current[i].x-p.x;
-            current[i].x = p.x - x;
-            current[i].y = p.y + y;
-           }
-           if (!check()) for (int i=0;i<4;i++) current[i]=next[i];
+    if (!checkGameOver()){
+      //// <- Move -> ///
+      for(int i=0;i<4;i++){
+        next[i]=current[i];
+        current[i].x+=dx;
+      }
+      if (!check()) {
+        for(int i=0;i<4;i++){
+          current[i]=next[i];
+        }
       }
 
-    ///////Tick//////
-    if (timer>delay)
-      {
-        for (int i=0;i<4;i++) { next[i]=current[i]; current[i].y+=1; }
-
-        if (!check())
+      //////Rotate//////
+      if (rotate)
         {
-         for (int i=0;i<4;i++) field[next[i].y][next[i].x]=colorNum;
-
-         colorNum=1+rand()%7;
-         int n=rand()%7;
-         for (int i=0;i<4;i++)
-           {
-            current[i].x = figures[n][i] % 2; // Must to be changed
-            current[i].y = figures[n][i] / 2;
-           }
+          Point p = current[1]; //center of rotation
+          for (int i=0;i<4;i++)
+            {
+              int x = current[i].y-p.y;
+              int y = current[i].x-p.x;
+              current[i].x = p.x - x;
+              current[i].y = p.y + y;
+            }
+            if (!check()) for (int i=0;i<4;i++) current[i]=next[i];
         }
 
-         timer=0;
-      }
+      ///////Tick//////
+      if (timer>delay){
+          for (int i=0;i<4;i++) { next[i]=current[i]; current[i].y+=1; }
+          if (!check())
+          {
+          for (int i=0;i<4;i++) field[next[i].y][next[i].x]=colorNum;
+
+          colorNum=1+rand()%7;
+          int n=rand()%7;
+          for (int i=0;i<4;i++)
+            {
+              // Gerando nova peça
+              current[i].x = figures[n][i] % 2 + (WIDTH / 2) - 1; // Must to be changed
+              current[i].y = figures[n][i] / 2;
+            }
+          }
+
+          timer=0;
+        }
+   }
 
     ///////check lines//////////
     int k=HEIGHT-1;
@@ -194,9 +225,8 @@ int main()
         window.draw(s);
       }
 
-    // window.draw(frame);
-
-
+    //
+    
     // Highscore
     int highscore;
     std::ifstream arquivo("arquivo.txt");
@@ -209,6 +239,14 @@ int main()
         std::ofstream novo_arquivo("arquivo.txt");
         novo_arquivo << "0";
         novo_arquivo.close();
+    }
+
+    if (checkGameOver()) {
+      displayGameOver(window);
+      if (Score > highscore){
+        std::ofstream novo_arquivo("arquivo.txt");
+        novo_arquivo << Score;
+        novo_arquivo.close();}
     }
     displayHighScore(window, highscore);
 
